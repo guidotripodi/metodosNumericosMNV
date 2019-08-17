@@ -130,7 +130,6 @@ void Matriz::printM() {
     int l = 0;
     int i, j;
     int n = this->getN();
-    int m = this->getM();
     for (i = 0; i < n; i++) {
         for (j = 0; j < n; j++) {
             if (this->getVal(i, j) == 0) {
