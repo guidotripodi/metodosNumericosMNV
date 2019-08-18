@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 
     // genero una instancia Matriz de resultados Ganadores y vector de totales
     instancia *ins= generarInstanciaDesdeArchivo(archivoDeEntrada,contarEmpates);
-
+    archivoDeEntrada.close();
     totalEquipos = ins->getTotalEquipos();
     // base para el resultado
     double* respuesta = new double[ins->getTotalEquipos()];
@@ -126,7 +126,6 @@ int main(int argc, char *argv[]) {
     }
 
     archivoDeSalida.close();
-    archivoDeEntrada.close();
     return 0;
 }
 
@@ -201,7 +200,6 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
                 }
             }
         }
-        archivoDeEntrada.close();
     }
     instancia *res =new instancia();
     res->setTotalPartidos(k);
