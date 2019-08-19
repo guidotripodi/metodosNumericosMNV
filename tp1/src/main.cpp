@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
     ofstream archivoTiempos;
     archivoDeSalida.setf(ios::fixed, ios::floatfield); // tipo salida
     archivoTiempos.setf(ios::fixed, ios::floatfield); // tipo salida
-    archivoTiempos.precision(6); // cant decimales
-    archivoDeSalida.precision(6); // cant decimales
+    archivoTiempos.precision(15); // cant decimales
+    archivoDeSalida.precision(15); // cant decimales
     archivoDeSalida.open(argv[2]);
 
 
