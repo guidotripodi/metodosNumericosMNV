@@ -77,8 +77,9 @@ int main(int argc, char *argv[]) {
     }
 
     Matriz * CMM = ins->getCMM();
+    // ins->print();
     string totales =  intToString(totalEquipos) + " " + intToString(ins->getTotalPartidos()) + " ";
-
+    
     // metodo Metodo CMM Con Gauss
     if (strcmp(argv[3], "0") == 0) {
         cout << "Corriendo Metodo Gauss..." << endl;
@@ -164,7 +165,7 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
             archivoDeEntrada >> equipo2;
             // quinta linea es la cantidad de goles del segundo equipo
             archivoDeEntrada >> goles2;
-
+            
             if(goles1>goles2){
                 totales[equipo1-1]++;
                 totales[equipo2-1]++;
@@ -173,7 +174,7 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
                 tablaResultados->setVal(equipo1-1,equipo2-1,actual+1);
 
             }else{
-                if(goles2<goles1){
+                if(goles2>goles1){
                     totales[equipo1-1]++;
                     totales[equipo2-1]++;
                     int actual = tablaResultados->getVal(equipo2-1,equipo1-1);

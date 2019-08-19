@@ -124,7 +124,7 @@ void instancia::generarVectorB(){
     int i;
 
     for (i = 0; i < ganados->getN(); ++i) {
-        b[i]= 1.0+((double)getTotalGanados(i)-(double)getTotalPerdidos(i))/2.0;
+        b[i]= 1.0+((double)this->getTotalGanados(i)-(double)this->getTotalPerdidos(i))/2.0;
     }
 
 }
