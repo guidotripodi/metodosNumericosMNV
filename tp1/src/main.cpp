@@ -87,16 +87,14 @@ int main(int argc, char *argv[]) {
         for (int iteraciones = 0; iteraciones<5; iteraciones++){
             gettimeofday(&startGauss, NULL);
 
-            respuesta =gauss(CMM,ins->getVectorB());
+            respuesta = gauss(CMM,ins->getVectorB());
 
             gettimeofday(&endGauss, NULL);
 
             elapsed_seconds = endGauss.tv_sec - startGauss.tv_sec;
             elapsed_useconds = endGauss.tv_usec - startGauss.tv_usec;
 
-            //if (((elapsed_seconds) * 1000 + elapsed_useconds / 1000.0) + 0.5 < timeGauss){
             timeGauss+= ((elapsed_seconds) * 1000 + elapsed_useconds / 1000.0) + 0.5;
-            //}
         }
         timeGauss= timeGauss/5;
 
