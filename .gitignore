@@ -1,4 +1,10 @@
 .DS_Store
 ./tp1/.DS_Store
 ./tp1/src/.DS_Store
-./tp1/src/*.o
+/tp1/src/eliminaciongauss/elimgauss.o
+/tp1/src/instancia/instancia.o
+/tp1/src/main.o
+/tp1/src/matriz/matriz.o
+/tp1/src/tp
+/tp1/src/.deps
+/tp1/src/wp/wp.o
