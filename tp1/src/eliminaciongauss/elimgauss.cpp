@@ -45,6 +45,8 @@ double* gauss(Matriz *m,double * b) {
                 m->setVal(fila,columna,valor_fila_columna);
             }
         }
+        m->printM();
+        cout << endl;
     }
 
     // resolver sistema Gr=b

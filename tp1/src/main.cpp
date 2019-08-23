@@ -79,7 +79,6 @@ int main(int argc, char *argv[]) {
     Matriz * CMM = ins->getCMM();
     // ins->print();
     string totales =  intToString(totalEquipos) + " " + intToString(ins->getTotalPartidos()) + " ";
-    
     // metodo Metodo CMM Con Gauss
     if (strcmp(argv[3], "0") == 0) {
         cout << "Corriendo Metodo Gauss..." << endl;
@@ -105,7 +104,7 @@ int main(int argc, char *argv[]) {
     }
 
     // metodo WP
-    if (strcmp(argv[3], "2") == 0) {
+    if (strcmp(argv[3], "1") == 0) {
         cout << "Corriendo Metodo WP..." << endl;
 
         gettimeofday(&startWP, NULL);
@@ -119,6 +118,16 @@ int main(int argc, char *argv[]) {
         archivoTiempos.close();
 
     }
+
+    // Metodo alternativo es usando la matriz de Massey(messi)
+    // info en:
+    //https://www3.nd.edu/~apilking/Math10170/Information/Lectures%202015/Topic%209%20Massey's%20Method.pdf
+    if (strcmp(argv[3], "2") == 0) {
+        cout << "Corriendo Metodo Massey..." << endl;
+
+        respuesta = gauss(ins->getMass(),ins->getDiferencias());
+    }
+
 
     for (int w = 0; w < ins->getTotalEquipos(); w++) {
         archivoDeSalida << respuesta[w] << endl;
@@ -146,31 +155,40 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
     archivoDeEntrada >> k;
     // creo la tabla de resultados ganadores
     Matriz * tablaResultados  =  new Matriz(n,n);
+    instancia *res =new instancia();
     // creo la tabla de partidos totales
     int* totales = new int[n];
+    double* diferencias = new double[n];
     for (i = 0; i < n; ++i) {
         totales[i]=0;
     }
+
 
     if (archivoDeEntrada.is_open())
     {
         for (i = 0; i < k; ++i) {
             //primer linea es fecha
             archivoDeEntrada >> fecha;
+
             // segunda linea es el numero del primer equipo
             archivoDeEntrada >> equipo1;
+
             // tercer linea es la cantidad de goles del primer equipo
             archivoDeEntrada >> goles1;
+
             // cuarta linea es el numero del segundo equipo
             archivoDeEntrada >> equipo2;
+
             // quinta linea es la cantidad de goles del segundo equipo
             archivoDeEntrada >> goles2;
-            
+
+            // pongo diferencia de goles para massey
+            diferencias[equipo1-1]= diferencias[equipo1-1] + goles1-goles2;
+            diferencias[equipo2-1]=diferencias[equipo2-1] + goles2-goles1;
             if(goles1>goles2){
                 totales[equipo1-1]++;
                 totales[equipo2-1]++;
                 int actual = tablaResultados->getVal(equipo1-1,equipo2-1);
-
                 tablaResultados->setVal(equipo1-1,equipo2-1,actual+1);
 
             }else{
@@ -200,10 +218,10 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
             }
         }
     }
-    instancia *res =new instancia();
     res->setTotalPartidos(k);
     res->setGanados(tablaResultados);
     res->setTotales(totales);
+    res->setDiferencias(diferencias);
     res->generarCMM();
     res->generarVectorB();
     return res;
