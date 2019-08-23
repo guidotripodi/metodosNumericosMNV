@@ -51,12 +51,13 @@ double* gauss(Matriz *m,double * b) {
 
     // resolver sistema Gr=b
     double* result = new double[m->getN()];
-
+    
     for (int i = m->getN()-1 ; i >= 0 ; i--){
         double acum_suma=0.0;
         for(int j = m->getN()-1 ; j > i ; j-- ){
             acum_suma += m->getVal(i,j)*result[j] ;
         }
+        cout << b[i] << endl;
         result [i] = (b[i] - acum_suma) /(double) m->getVal(i,i);
     }
     return result;
