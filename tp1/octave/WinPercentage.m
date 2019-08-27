@@ -1,4 +1,3 @@
-#!/usr/bin/env -S octave -qf
 args = argv();
 filename = args{1};
 matches = dlmread(filename, ' ', 1, 1);
@@ -16,5 +15,8 @@ for i = 1 : size(matches)
   played(teamA) += 1;
   played(teamB) += 1;
 endfor
+win = win + ones(teams, 1);
+played = played + 2*ones(teams,1);
 result = win ./ played;
+
 disp(result);
