@@ -16,6 +16,7 @@ class instancia{
 
         // este tiene para cada equipo los partidos totales
         int * totales ;
+        double* raitings;
         int  totalPartidos;
 
         double * b;
@@ -50,6 +51,8 @@ class instancia{
         // setters para privados
         void setGanados(Matriz*);
         void setTotales(int*);
+        void setEloRaiting(double*);
+        double* getEloRaiting();
 
         // getters para privados
         Matriz* getGanados();

@@ -90,11 +90,19 @@ void instancia::generarCMM(){
 void instancia::setTotales(int* _totales){
     totales=_totales;
 };
+
+void instancia::setEloRaiting(double* _raitings){
+    raitings=_raitings;
+};
+
 void instancia::setGanados(Matriz* _ganados){
     ganados = _ganados;
 };
 
 // getters
+double* instancia::getEloRaiting(){
+    return raitings;
+};
 int* instancia::getTotales(){
     return totales;
 };
