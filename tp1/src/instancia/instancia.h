@@ -13,12 +13,10 @@ class instancia{
 
         // esta es la matriz CMM
         Matriz * CMM;
-        Matriz * Mass;
 
         // este tiene para cada equipo los partidos totales
         int * totales ;
         int  totalPartidos;
-        double* diferencias;
 
         double * b;
 
@@ -52,7 +50,6 @@ class instancia{
         // setters para privados
         void setGanados(Matriz*);
         void setTotales(int*);
-        void setDiferencias(double*);
 
         // getters para privados
         Matriz* getGanados();
@@ -63,9 +60,6 @@ class instancia{
         void generarCMM();
         void generarVectorB();
         double* getVectorB();
-
-        Matriz* getMass();
-        double* getDiferencias();
 };
 
 #endif

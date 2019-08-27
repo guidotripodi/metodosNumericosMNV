@@ -26,13 +26,6 @@ void instancia::print(){
         cout <<b[i] <<endl;
     }
 
-    cout <<"Matriz Massey" << endl;
-    Mass->printM();
-
-    cout <<"vector y massey" << endl;
-    for (i = 0; i < totalEquipos; ++i) {
-        cout <<diferencias[i] <<endl;
-    }
 }
 
 void instancia::setTotalPartidos(int _totales){
@@ -74,37 +67,28 @@ double instancia::getTotalJugados(int numeroDeEquipo){
     return this->totales[numeroDeEquipo];
 }
 
-
 // Cij = −nij si i!=j,
 // Cij = 2 + ni si i = j.
 void instancia::generarCMM(){
     int i,j;
-    double nij,mij;
+    double nij;
     int totalEquipos = this->getTotalEquipos();
     CMM = new Matriz(totalEquipos,totalEquipos);
-    Mass = new Matriz(totalEquipos,totalEquipos);
 
     for (i = 0; i < totalEquipos; ++i) {
         for (j = 0; j < totalEquipos; ++j) {
             if(i==j){
                 nij =this->getTotalJugados(i)+2.0;
-                mij =this->getTotalJugados(i);
             }else{
                 nij =(-1.0)* this->getTotalJugadosEntreEquipos(i,j);
-                mij =(-1.0)* this->getTotalJugadosEntreEquipos(i,j);
             }
             CMM->setVal(i,j,nij);
-            Mass->setVal(i,j,mij);
         }
     }
 }
-
 // setters
 void instancia::setTotales(int* _totales){
     totales=_totales;
-};
-void instancia::setDiferencias(double* _diferencias){
-    diferencias=_diferencias;
 };
 void instancia::setGanados(Matriz* _ganados){
     ganados = _ganados;
@@ -114,28 +98,21 @@ void instancia::setGanados(Matriz* _ganados){
 int* instancia::getTotales(){
     return totales;
 };
-double* instancia::getDiferencias(){
-    return diferencias;
-};
 
 Matriz *instancia::getGanados(){
     return ganados;
 };
 
-Matriz *instancia::getMass(){
-    return Mass;
-}
-
 Matriz *instancia::getCMM(){
-    // int i, j;
+    int i, j;
 
-    // Matriz * newCMM = new Matriz(this->getTotalEquipos(),this->getTotalEquipos());
+    Matriz * newCMM = new Matriz(this->getTotalEquipos(),this->getTotalEquipos());
 
-    // for (i = 0; i < this->getTotalEquipos(); i++) {
-    // for (j = 0; j < this->getTotalEquipos(); j++) {
-    // newCMM->setVal(i,j,this->CMM->getVal(i,j));
-    // }
-    // }
+    for (i = 0; i < this->getTotalEquipos(); i++) {
+        for (j = 0; j < this->getTotalEquipos(); j++) {
+            newCMM->setVal(i,j,this->CMM->getVal(i,j));
+        }
+    }
 
     return CMM;
 };
