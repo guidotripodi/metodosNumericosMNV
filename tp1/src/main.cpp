@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
     }
 
     // metodo WP
-    if (strcmp(argv[3], "2") == 0) {
+    if (strcmp(argv[3], "1") == 0) {
         cout << "Corriendo Metodo WP..." << endl;
 
         gettimeofday(&startWP, NULL);
