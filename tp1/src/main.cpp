@@ -3,7 +3,7 @@
 #include "instancia/instancia.h"
 #include "wp/wp.h"
 
-
+#include <math.h>       /* pow */
 #include <algorithm>    // std::sort
 #include <cmath>
 #include <climits>
@@ -24,6 +24,8 @@ instancia * generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarE
 instancia * generarInstanciaVacia(ifstream &archivoDeEntrada);
 void printVector(double * ,int );
 bool pairCompare(const std::pair<int, double>& firstElem, const std::pair<int, double>& secondElem);
+
+double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2);
 
 //El programa requiere 3 parametros, un archivo de entrada, uno de salida y el modo a ejecutar.
 int main(int argc, char *argv[]) {
@@ -79,6 +81,7 @@ int main(int argc, char *argv[]) {
     Matriz * CMM = ins->getCMM();
     // ins->print();
     string totales =  intToString(totalEquipos) + " " + intToString(ins->getTotalPartidos()) + " ";
+
     // metodo Metodo CMM Con Gauss
     if (strcmp(argv[3], "0") == 0) {
         cout << "Corriendo Metodo Gauss..." << endl;
@@ -119,15 +122,10 @@ int main(int argc, char *argv[]) {
 
     }
 
-    // Metodo alternativo es usando la matriz de Massey(messi)
-    // info en:
-    //https://www3.nd.edu/~apilking/Math10170/Information/Lectures%202015/Topic%209%20Massey's%20Method.pdf
+    // CALCULATE ELO
     if (strcmp(argv[3], "2") == 0) {
-        cout << "Corriendo Metodo Massey..." << endl;
-
-        respuesta = gauss(ins->getMass(),ins->getDiferencias());
+        respuesta = ins->getEloRaiting();
     }
-
 
     for (int w = 0; w < ins->getTotalEquipos(); w++) {
         archivoDeSalida << respuesta[w] << endl;
@@ -148,47 +146,55 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
     int n,k,i,fecha;
     int equipo1,equipo2,goles1,goles2;
 
-
     //leo cantidad de equipos
     archivoDeEntrada >> n;
     //leo cantidad de partidos
     archivoDeEntrada >> k;
     // creo la tabla de resultados ganadores
     Matriz * tablaResultados  =  new Matriz(n,n);
-    instancia *res =new instancia();
     // creo la tabla de partidos totales
     int* totales = new int[n];
-    double* diferencias = new double[n];
+
+    ///// ELO RAITING
+    int cantEquipos = n;
+    double* raitings = new double[cantEquipos];
+    int K = 60;
+
+    // raiting inicial 100 para todos los equipos
+    for (int i = 0; i < cantEquipos; ++i) {
+        raitings[i]=100.0;
+    }
+    //////////
+    //
     for (i = 0; i < n; ++i) {
         totales[i]=0;
     }
-
 
     if (archivoDeEntrada.is_open())
     {
         for (i = 0; i < k; ++i) {
             //primer linea es fecha
             archivoDeEntrada >> fecha;
-
             // segunda linea es el numero del primer equipo
             archivoDeEntrada >> equipo1;
-
             // tercer linea es la cantidad de goles del primer equipo
             archivoDeEntrada >> goles1;
-
             // cuarta linea es el numero del segundo equipo
             archivoDeEntrada >> equipo2;
-
             // quinta linea es la cantidad de goles del segundo equipo
             archivoDeEntrada >> goles2;
+            /// INIT Calculcate ELO RAIING ///
+            double r1=getEloRaiting( raitings,equipo1,equipo2,goles1,goles2);
+            double r2=getEloRaiting(raitings,equipo2,equipo1,goles2,goles1);
 
-            // pongo diferencia de goles para massey
-            diferencias[equipo1-1]= diferencias[equipo1-1] + goles1-goles2;
-            diferencias[equipo2-1]=diferencias[equipo2-1] + goles2-goles1;
+            raitings[equipo1]=r1;
+            raitings[equipo2]=r2;
+            /// END Calculate ELO RAIING ///
             if(goles1>goles2){
                 totales[equipo1-1]++;
                 totales[equipo2-1]++;
                 int actual = tablaResultados->getVal(equipo1-1,equipo2-1);
+
                 tablaResultados->setVal(equipo1-1,equipo2-1,actual+1);
 
             }else{
@@ -218,13 +224,47 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
             }
         }
     }
+    instancia *res =new instancia();
     res->setTotalPartidos(k);
+    res->setEloRaiting(raitings);
     res->setGanados(tablaResultados);
     res->setTotales(totales);
-    res->setDiferencias(diferencias);
     res->generarCMM();
     res->generarVectorB();
     return res;
+}
+double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2){
+    int K = 60;
+    double ro1 = raitings[equipo1];
+    double ro2 = raitings[equipo2];
+    // if the game is a draw or is won by one goal
+    // G = 1
+    // If the game is won by two goals
+    // G = 1,5
+    // G = (11+N)/8
+    int df1 = goles1-goles2;
+    double G = 0;
+    if (df1==0 || df1==1){
+        G=1;
+    } else if( df1==2){
+        G = 1.5;
+    }else if (df1>2){
+        G  = (11+df1)/8;
+    }
+
+    // Result of match - Obtaining the W value
+    double W=0;
+    // W is the result of the game (1 for a win, 0.5 for a draw, and 0 for a loss).
+    if(df1==0){
+        W=0.5;
+    }else if(df1>0){
+        W=1;
+    }
+
+    // W_e = 1 / (10^(-dr/400) + 1)
+    double dr = (ro1-ro2+100)*-1;
+    double W_e = 1 / (pow(10,(dr/400)) + 1);
+    return ro1+ K*G*(W-W_e);
 }
 
 void printVector(double * vec,int longitud){
