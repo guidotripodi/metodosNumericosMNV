@@ -10,3 +10,5 @@
 /tp1/src/wp/wp.o
 /tp1/src/tests/*.out
 /tp1/src/tests/**.out
+.ipynb_checkpoints/
+/tp1/src/tests/.ipynb_checkpoints/
