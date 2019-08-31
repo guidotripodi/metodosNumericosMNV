@@ -8,3 +8,5 @@
 /tp1/src/tp
 /tp1/src/.deps
 /tp1/src/wp/wp.o
+/tp1/src/tests/*.out
+/tp1/src/tests/**.out
