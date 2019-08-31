@@ -198,29 +198,10 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
                 tablaResultados->setVal(equipo1-1,equipo2-1,actual+1);
 
             }else{
-                if(goles2>goles1){
-                    totales[equipo1-1]++;
-                    totales[equipo2-1]++;
-                    int actual = tablaResultados->getVal(equipo2-1,equipo1-1);
-
-                    tablaResultados->setVal(equipo2-1,equipo1-1,actual+1);
-                }else{
-                    if(contarEmpates && goles1==goles2){
-                        totales[equipo1-1]++;
-                        totales[equipo2-1]++;
-                        cout << "CONTE EMPATE" << endl;
-                        cout << fecha << endl;
-                        cout << goles1<< endl;
-                        cout << goles2<< endl;
-                        int actual = tablaResultados->getVal(equipo2-1,equipo1-1);
-
-                        tablaResultados->setVal(equipo2-1,equipo1-1,actual+1);
-
-                        actual = tablaResultados->getVal(equipo1-1,equipo2-1);
-
-                        tablaResultados->setVal(equipo1-1,equipo2-1,actual+1);
-                    }
-                }
+                totales[equipo1-1]++;
+                totales[equipo2-1]++;
+                int actual = tablaResultados->getVal(equipo2-1,equipo1-1);
+                tablaResultados->setVal(equipo2-1,equipo1-1,actual+1);
             }
         }
     }
