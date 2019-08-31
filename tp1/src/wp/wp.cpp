@@ -12,7 +12,7 @@ double* wp(instancia* ins){
     }
 
     for (i = 0; i < cantEquipos; ++i) {
-        res[i] = double(ins->getTotalGanados(i))/double(ins->getTotalJugados(i));
+        res[i] = double(ins->getTotalGanados(i))+1./double(ins->getTotalJugados(i))+2.;
     }
 
 
