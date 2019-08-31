@@ -25,7 +25,7 @@ instancia * generarInstanciaVacia(ifstream &archivoDeEntrada);
 void printVector(double * ,int );
 bool pairCompare(const std::pair<int, double>& firstElem, const std::pair<int, double>& secondElem);
 
-double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2);
+double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2,bool esLocal);
 
 //El programa requiere 3 parametros, un archivo de entrada, uno de salida y el modo a ejecutar.
 int main(int argc, char *argv[]) {
@@ -184,8 +184,8 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
             // quinta linea es la cantidad de goles del segundo equipo
             archivoDeEntrada >> goles2;
             /// INIT Calculcate ELO RAIING ///
-            double r1=getEloRaiting( raitings,equipo1,equipo2,goles1,goles2);
-            double r2=getEloRaiting(raitings,equipo2,equipo1,goles2,goles1);
+            double r1=getEloRaiting( raitings,equipo1,equipo2,goles1,goles2,true);
+            double r2=getEloRaiting(raitings,equipo2,equipo1,goles2,goles1,false);
 
             raitings[equipo1]=r1;
             raitings[equipo2]=r2;
@@ -214,7 +214,7 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
     res->generarVectorB();
     return res;
 }
-double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2){
+double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2,bool esLocal){
     int K = 60;
     double ro1 = raitings[equipo1];
     double ro2 = raitings[equipo2];
@@ -243,7 +243,12 @@ double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int gol
     }
 
     // W_e = 1 / (10^(-dr/400) + 1)
-    double dr = (ro1-ro2+100)*-1;
+    double dr=.0;
+    if(esLocal){
+        dr = (ro1-ro2+100)*-1;
+    }else{
+        dr = (ro1-ro2)*-1;
+    }
     double W_e = 1 / (pow(10,(dr/400)) + 1);
     return ro1+ K*G*(W-W_e);
 }
