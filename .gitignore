@@ -6,9 +6,11 @@
 /tp1/src/main.o
 /tp1/src/matriz/matriz.o
 /tp1/src/tp
+/tp1/src/tp1
 /tp1/src/.deps
 /tp1/src/wp/wp.o
 /tp1/src/tests/*.out
 /tp1/src/tests/**.out
+/tp1/src/**.o
 .ipynb_checkpoints/
 /tp1/src/tests/.ipynb_checkpoints/
