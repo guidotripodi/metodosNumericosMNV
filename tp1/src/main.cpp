@@ -16,16 +16,17 @@
 #include <fstream>
 #include <string.h>
 #include <sys/time.h>
+#include <iomanip>      // std::setprecision
 
 using namespace std;
 
 string intToString(int pNumber);
-instancia * generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEmpates);
+instancia * generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada);
 instancia * generarInstanciaVacia(ifstream &archivoDeEntrada);
 void printVector(double * ,int );
 bool pairCompare(const std::pair<int, double>& firstElem, const std::pair<int, double>& secondElem);
 
-double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2,bool esLocal);
+double getEloRaiting(double r1,double r2,int equipo1,int equipo2,int goles1,int goles2,bool esLocal);
 
 //El programa requiere 3 parametros, un archivo de entrada, uno de salida y el modo a ejecutar.
 int main(int argc, char *argv[]) {
@@ -48,13 +49,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // agregado para contar empates;
-    int contarEmpates;
-    if(argc ==4 ){
-        contarEmpates  = 0;
-    }else{
-        contarEmpates  = atoi(argv[4]);
-    }
     //leo archivo entrada
     ifstream archivoDeEntrada (argv[1]);
 
@@ -69,7 +63,7 @@ int main(int argc, char *argv[]) {
 
 
     // genero una instancia Matriz de resultados Ganadores y vector de totales
-    instancia *ins= generarInstanciaDesdeArchivo(archivoDeEntrada,contarEmpates);
+    instancia *ins= generarInstanciaDesdeArchivo(archivoDeEntrada);
     archivoDeEntrada.close();
     totalEquipos = ins->getTotalEquipos();
     // base para el resultado
@@ -84,7 +78,7 @@ int main(int argc, char *argv[]) {
 
     // metodo Metodo CMM Con Gauss
     if (strcmp(argv[3], "0") == 0) {
-        cout << "Corriendo Metodo Gauss..." << endl;
+        cout << "Corriendo Metodo Gauss en CMM..." << endl;
 
         double timeGauss= 0.0;
         for (int iteraciones = 0; iteraciones<5; iteraciones++){
@@ -124,6 +118,8 @@ int main(int argc, char *argv[]) {
 
     // CALCULATE ELO
     if (strcmp(argv[3], "2") == 0) {
+        cout << "Corriendo Metodo ELO..." << endl;
+
         respuesta = ins->getEloRaiting();
     }
 
@@ -142,7 +138,7 @@ string intToString(int pNumber)
     return oOStrStream.str();
 }
 
-instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEmpates){
+instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada){
     int n,k,i,fecha;
     int equipo1,equipo2,goles1,goles2;
 
@@ -157,12 +153,11 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
 
     ///// ELO RAITING
     int cantEquipos = n;
-    double* raitings = new double[cantEquipos];
-    int K = 60;
+    double* raitings = new double[n];
 
     // raiting inicial 100 para todos los equipos
-    for (int i = 0; i < cantEquipos; ++i) {
-        raitings[i]=100.0;
+    for (int i = 0; i < cantEquipos; i++) {
+        raitings[i]= 100;
     }
     //////////
     //
@@ -184,11 +179,14 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
             // quinta linea es la cantidad de goles del segundo equipo
             archivoDeEntrada >> goles2;
             /// INIT Calculcate ELO RAIING ///
-            double r1=getEloRaiting( raitings,equipo1,equipo2,goles1,goles2,true);
-            double r2=getEloRaiting(raitings,equipo2,equipo1,goles2,goles1,false);
+            double ro1= raitings[equipo1-1];
+            double ro2= raitings[equipo2-1];
 
-            raitings[equipo1]=r1;
-            raitings[equipo2]=r2;
+            double r1=getEloRaiting(ro1,ro2,equipo1,equipo2,goles1,goles2,true);
+            double r2=getEloRaiting(ro2,ro1,equipo2,equipo1,goles2,goles1,false);
+
+            raitings[equipo1-1]=r1;
+            raitings[equipo2-1]=r2;
             /// END Calculate ELO RAIING ///
             if(goles1>goles2){
                 totales[equipo1-1]++;
@@ -203,6 +201,7 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
                 int actual = tablaResultados->getVal(equipo2-1,equipo1-1);
                 tablaResultados->setVal(equipo2-1,equipo1-1,actual+1);
             }
+            // printVector(raitings,n);
         }
     }
     instancia *res =new instancia();
@@ -214,10 +213,8 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada,bool contarEm
     res->generarVectorB();
     return res;
 }
-double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int goles2,bool esLocal){
+double getEloRaiting(double ro1,double ro2,int equipo1,int equipo2,int goles1,int goles2,bool esLocal){
     int K = 60;
-    double ro1 = raitings[equipo1];
-    double ro2 = raitings[equipo2];
     // if the game is a draw or is won by one goal
     // G = 1
     // If the game is won by two goals
@@ -225,32 +222,33 @@ double getEloRaiting(double* raitings,int equipo1,int equipo2,int goles1,int gol
     // G = (11+N)/8
     int df1 = goles1-goles2;
     double G = 0;
-    if (df1==0 || df1==1){
+    if (df1<2){
         G=1;
     } else if( df1==2){
         G = 1.5;
     }else if (df1>2){
-        G  = (11+df1)/8;
+        G  = double (9+df1)/8;
     }
-
     // Result of match - Obtaining the W value
     double W=0;
     // W is the result of the game (1 for a win, 0.5 for a draw, and 0 for a loss).
     if(df1==0){
-        W=0.5;
+        W=0.5f;
     }else if(df1>0){
-        W=1;
+        W=1.0f;
     }
 
     // W_e = 1 / (10^(-dr/400) + 1)
     double dr=.0;
     if(esLocal){
-        dr = (ro1-ro2+100)*-1;
+        dr =double (ro1-ro2+100)*-1;
     }else{
-        dr = (ro1-ro2)*-1;
+        dr = double (ro1-ro2)*-1;
     }
-    double W_e = 1 / (pow(10,(dr/400)) + 1);
-    return ro1+ K*G*(W-W_e);
+    double W_e =double (1 / double (pow(10,(dr/400)) + 1));
+    double res = ro1+ double(K*G*(W-W_e));
+
+    return res;
 }
 
 void printVector(double * vec,int longitud){
