@@ -214,7 +214,7 @@ instancia *generarInstanciaDesdeArchivo(ifstream &archivoDeEntrada){
     return res;
 }
 double getEloRaiting(double ro1,double ro2,int equipo1,int equipo2,int goles1,int goles2,bool esLocal){
-    int K = 60;
+    int K = 1;
     // if the game is a draw or is won by one goal
     // G = 1
     // If the game is won by two goals
