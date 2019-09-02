@@ -15,7 +15,7 @@ for i = 1 : size(matches)
   diffa = matches(i, 2) - matches(i,4);
   diffb = matches(i,4) - matches(i, 2) ;
   
-  // Obtain G
+  % // Obtain G
   if diffa == 1 || diffa == 0 
 	  Ga=1.0;
   elseif diffa==2
@@ -32,7 +32,7 @@ for i = 1 : size(matches)
 	  Gb = (9.0 + diffb)/8.0;
   endif
 
-  // Obtain W
+  % // Obtain W
   Wa = 0.5;
   if matches(i, 2) > matches(i,4)
 	  Wa = 1.0;
@@ -46,14 +46,14 @@ for i = 1 : size(matches)
 	  Wb = 0.0;
   endif
 
-  // rating difference
+  % //rating difference
   dra =  (ratings(teamA) - ratings(teamB) +100)*-1;
   drb =  (ratings(teamB) - ratings(teamA))*-1;
-  // Win expectancy
+  % // Win expectancy
   WEa = 1/(10^(dra/400) + 1);
   WEb = 1/(10^(drb/400) + 1);
 
-  // Final rating
+  % // Final rating
   ratings(teamA) = ratings(teamA) + K*Ga*(Wa - WEa);
   ratings(teamB) = ratings(teamB) + K*Gb*(Wb - WEb);
 endfor
