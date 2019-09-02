@@ -19,7 +19,7 @@ class Matriz {
         void setVal(int x, int y, double val);
         double getVal(int x, int y);
         void printM();
-        Matriz *copy();
+        // Matriz *opy();
         void gauss(Matriz *m,double *b);
         void restar_fila(Matriz *m, int fila_minuendo, int fila_sustraendo, double *b);
 };

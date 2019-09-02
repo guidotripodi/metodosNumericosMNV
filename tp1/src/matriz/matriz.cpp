@@ -145,13 +145,3 @@ void Matriz::printM() {
 }
 
 
-Matriz *Matriz::copy() {
-    Matriz* aux = new Matriz(n,m);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            aux->matrix[i][j] = matrix[i][j];
-        }
-    }
-    return aux;
-}
-

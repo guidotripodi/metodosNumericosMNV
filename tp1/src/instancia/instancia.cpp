@@ -150,57 +150,6 @@ int instancia::getEquipoPerdido(int equipo1){
 
     return equipo;
 };
-// esta funcion lo que hace es darle un partido mas ganado al equipo1
-void instancia::modificarPartido(int equipo1,int equipo2){
-    // modifico el partido perdido en el otro
-    int totalganadose2e1 = this->ganados->getVal(equipo2,equipo1);
-    this->ganados->setVal(equipo2,equipo1,totalganadose2e1-1);
-
-    // en la matriz de partidos ganados le sumo uno al primero
-    int totalganadose1e2 = this->ganados->getVal(equipo1,equipo2);
-    this->ganados->setVal(equipo1,equipo2,totalganadose1e2+1);
-
-    // genero la nueva CMM
-    this->generarCMM();
-    // genero el nuevo vector B
-    this->generarVectorB();
-};
-
-// esta funcion lo que hace es darle un partido mas ganado al equipo1
-void instancia::ganaPartidoContra(int equipo1,int equipo2){
-    int totalJugados1 = this->getTotalJugados(equipo1);
-    int totalJugados2 = this->getTotalJugados(equipo2);
-    // le sumo un partido mas en partidos totales
-    this->totales[equipo1]=totalJugados1+1;
-    this->totales[equipo2]=totalJugados2+1;
-    // en la matriz de partidos ganados le sumo uno al primero
-    int totalganadose1e2 = this->ganados->getVal(equipo1,equipo2);
-    this->ganados->setVal(equipo1,equipo2,totalganadose1e2+1);
-    // genero la nueva CMM
-    this->generarCMM();
-    // genero el nuevo vector B
-    this->generarVectorB();
-};
-
-// Esta funcion lo que hace es cambiar un partido ganado por perdido y se lo suma al contrincante,
-// el partido seleccionado es uno que se jugo y fue ganado
-bool instancia::ganaPartido(int equipo1){
-    bool encontroUno = false;
-    int i;
-    for (i = 0; i < this->getTotalEquipos(); i++) {
-        if(this->ganados->getVal(equipo1,i)!=0 && i!=equipo1){
-            // agarro el valor viejo
-            int valor = this->ganados->getVal(equipo1,i);
-            // le cambio el resultado al partido
-            this->ganados->setVal(equipo1,i,valor-1);
-            // le hago ganar al otro equipo
-            int valor2 = this->ganados->getVal(i,equipo1);
-            this->ganados->setVal(i,equipo1,valor2+1);
-            encontroUno = true;
-        }
-    }
-    return encontroUno;
-}
 
 double* instancia::getVectorB(){
     return b;
