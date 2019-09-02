@@ -4,7 +4,7 @@ filename = args{1};
 matches = dlmread(filename, ' ', 1, 1);
 teams = dlmread(filename, ' ', [0 0 0 0]);
 
-K = 60;
+K = 1;
 Ga = 0.0;
 Gb = 0.0;
 ratings = 100*ones(teams, 1);
@@ -21,7 +21,7 @@ for i = 1 : size(matches)
   elseif diffa==2
 	  Ga = 1.5;
   else 
-	  Ga = (9.0 + diffa)/8.0;
+	  Ga = (11.0 + diffa)/8.0;
   endif
 
   if diffb == 1 || diffb == 0 
@@ -29,7 +29,7 @@ for i = 1 : size(matches)
   elseif diffb==2
 	  Gb = 1.5;
   else 
-	  Gb = (9.0 + diffb)/8.0;
+	  Gb = (11.0 + diffb)/8.0;
   endif
 
   % // Obtain W

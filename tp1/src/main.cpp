@@ -228,7 +228,7 @@ double getEloRaiting(double ro1,double ro2,int equipo1,int equipo2,int goles1,in
     } else if( df1==2){
         G = 1.5;
     }else{
-        G  = double (9+df1)/8;
+        G  = double (11+df1)/8;
     }
     // Result of match - Obtaining the W value
     double W=0;
